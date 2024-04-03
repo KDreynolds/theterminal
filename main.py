@@ -14,6 +14,54 @@ class Character:
     def __str__(self):
         return f"Name: {self.name}, Health: {self.health}, Strength: {self.strength}, Agility: {self.agility}, Intelligence: {self.intelligence}, Level: {self.level}, Experience: {self.experience}"
     
+
+class Point:
+    def __init__(self, x, y, type):
+        self.x = x
+        self.y = y
+        self.type = type
+
+def generate_world(width, height):
+    world = []
+
+    # Generate points of interest
+    num_dungeons = random.randint(3, 6)
+    num_items = random.randint(5, 10)
+    num_npcs = random.randint(4, 8)
+
+    # Generate dungeon points
+    for _ in range(num_dungeons):
+        x = random.randint(0, width - 1)
+        y = random.randint(0, height - 1)
+        dungeon_point = Point(x, y, "dungeon")
+        world.append(dungeon_point)
+
+    # Generate item points
+    for _ in range(num_items):
+        x = random.randint(0, width - 1)
+        y = random.randint(0, height - 1)
+        item_point = Point(x, y, "item")
+        world.append(item_point)
+
+    # Generate NPC points
+    for _ in range(num_npcs):
+        x = random.randint(0, width - 1)
+        y = random.randint(0, height - 1)
+        npc_point = Point(x, y, "npc")
+        world.append(npc_point)
+
+    return world
+
+# Example usage
+world_width = 50
+world_height = 50
+generated_world = generate_world(world_width, world_height)
+
+# Print the generated world points
+for point in generated_world:
+    print(f"Point: ({point.x}, {point.y}) - Type: {point.type}")
+
+
 class Scenario:
     def __init__(self, title, description):
         self.title = title
@@ -37,6 +85,78 @@ def generate_character():
     character = Character(name, health, strength, agility, intelligence)
     return character
 
+def generate_dungeon():
+    # Placeholder implementation for generating a dungeon
+    dungeon_name = random.choice(["Abandoned Mine", "Haunted Crypt", "Forgotten Ruins"])
+    dungeon_description = "You enter a mysterious dungeon filled with danger and treasure."
+    return dungeon_name, dungeon_description
+
+def generate_item():
+    # Placeholder implementation for generating an item
+    item_name = random.choice(["Sword of Destiny", "Amulet of Power", "Enchanted Ring"])
+    item_description = "You find a powerful item that can aid you in your quest."
+    return item_name, item_description
+
+def generate_npc():
+    # Placeholder implementation for generating an NPC
+    npc_name = random.choice(["Wise Old Sage", "Mysterious Stranger", "Friendly Merchant"])
+    npc_dialogue = "Greetings, traveler. How may I assist you on your journey?"
+    return npc_name, npc_dialogue
+
+def play_game(hero, scenario, world):
+    print(f"Starting Scenario: {scenario.title}")
+    print(scenario.description)
+
+    # Set up initial game state based on the scenario
+    location = "Starting Location"
+    inventory = []
+
+    while True:
+        print(f"\nCurrent Location: {location}")
+        print("Available Actions:")
+        print("1. Explore")
+        print("2. Check Inventory")
+        print("3. Quit")
+
+        choice = input("Enter your choice (1-3): ")
+
+        if choice == "1":
+            # Explore action
+            print("You explore your surroundings...")
+            # Check if the current location matches any points of interest in the world
+            for point in world:
+                if point.x == hero.x and point.y == hero.y:
+                    if point.type == "dungeon":
+                        dungeon_name, dungeon_description = generate_dungeon()
+                        print(f"You have found a dungeon: {dungeon_name}")
+                        print(dungeon_description)
+                        # TODO: Implement dungeon exploration logic
+                    elif point.type == "item":
+                        item_name, item_description = generate_item()
+                        print(f"You have found an item: {item_name}")
+                        print(item_description)
+                        inventory.append(item_name)
+                    elif point.type == "npc":
+                        npc_name, npc_dialogue = generate_npc()
+                        print(f"You have encountered an NPC: {npc_name}")
+                        print(npc_dialogue)
+                        # TODO: Implement NPC interaction logic
+            # TODO: Update game state, describe results, and prompt for next action
+        elif choice == "2":
+            # Check Inventory action
+            if inventory:
+                print("Your inventory:")
+                for item in inventory:
+                    print(item)
+            else:
+                print("Your inventory is empty.")
+        elif choice == "3":
+            # Quit action
+            print("Thank you for playing. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
 def start_game():
     print(Fore.YELLOW + "Welcome to the Adventure Game!" + Style.RESET_ALL)
     print("1. Start New Game")
@@ -59,13 +179,18 @@ def start_game():
             else:
                 print("Invalid choice. Please try again.")
 
+        # Generate the game world
+        world_width = 50
+        world_height = 50
+        world = generate_world(world_width, world_height)
+
         # Select a random scenario
         scenario = random.choice(scenarios)
         print(f"\nStarting Scenario: {scenario.title}")
         print(scenario.description)
 
-        # Start the game with the chosen character and scenario
-        # TODO: Implement the game logic here
+        # Start the game with the chosen character, scenario, and world
+        play_game(hero, scenario, world)
 
     elif choice == "2":
         print("Thank you for playing. Goodbye!")
