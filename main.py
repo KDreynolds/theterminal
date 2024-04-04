@@ -2,7 +2,7 @@ import random
 from colorama import Fore, Style
 
 class Character:
-    def __init__(self, name, health, strength, agility, intelligence):
+    def __init__(self, name, health, strength, agility, intelligence, x, y):
         self.name = name
         self.health = health
         self.strength = strength
@@ -10,10 +10,11 @@ class Character:
         self.intelligence = intelligence
         self.level = 1
         self.experience = 0
+        self.x = x
+        self.y = y
 
     def __str__(self):
-        return f"Name: {self.name}, Health: {self.health}, Strength: {self.strength}, Agility: {self.agility}, Intelligence: {self.intelligence}, Level: {self.level}, Experience: {self.experience}"
-    
+        return f"Name: {self.name}, Health: {self.health}, Strength: {self.strength}, Agility: {self.agility}, Intelligence: {self.intelligence}, Level: {self.level}, Experience: {self.experience}, Position: ({self.x}, {self.y})"
 
 class Point:
     def __init__(self, x, y, type):
@@ -76,31 +77,100 @@ scenarios = [
     Scenario("Darkness", "You are in a dark, mysterious place. You are on a quest to find the light.")
 ]
 
-def generate_character():
+def generate_character(x, y):
     name = random.choice(["Larry", "Barry", "Gary", "Terry", "Jerry", "Harry"])
     health = random.randint(50, 100)
     strength = random.randint(5, 15)
     agility = random.randint(5, 15)
     intelligence = random.randint(5, 15)
-    character = Character(name, health, strength, agility, intelligence)
+    character = Character(name, health, strength, agility, intelligence, x, y)
     return character
 
 def generate_dungeon():
-    # Placeholder implementation for generating a dungeon
-    dungeon_name = random.choice(["Abandoned Mine", "Haunted Crypt", "Forgotten Ruins"])
-    dungeon_description = "You enter a mysterious dungeon filled with danger and treasure."
+    dungeon_names = [
+        "Abandoned Mine",
+        "Haunted Crypt",
+        "Forgotten Ruins",
+        "Ancient Tomb",
+        "Forsaken Castle",
+        "Misty Caverns",
+        "Enchanted Grove",
+        "Fiery Volcano",
+        "Frozen Wasteland",
+        "Sunken Temple"
+    ]
+    dungeon_descriptions = [
+        "You enter a dark and eerie dungeon filled with danger and treasure.",
+        "The air is thick with the stench of decay as you venture into the depths.",
+        "Ancient ruins crumble around you, hiding secrets of a forgotten era.",
+        "The tomb is filled with the restless spirits of the long-dead.",
+        "A once-grand castle now lies in ruins, its halls echoing with ghostly whispers.",
+        "Mist swirls around you as you navigate the twisting caverns.",
+        "The grove pulses with an otherworldly energy, its flora both beautiful and deadly.",
+        "The heat is oppressive as you descend into the heart of the volcano.",
+        "Icy winds howl through the desolate landscape, chilling you to the bone.",
+        "The temple, long lost beneath the waves, holds ancient secrets and forgotten treasures."
+    ]
+    dungeon_name = random.choice(dungeon_names)
+    dungeon_description = random.choice(dungeon_descriptions)
     return dungeon_name, dungeon_description
 
 def generate_item():
-    # Placeholder implementation for generating an item
-    item_name = random.choice(["Sword of Destiny", "Amulet of Power", "Enchanted Ring"])
-    item_description = "You find a powerful item that can aid you in your quest."
+    item_names = [
+        "Sword of Destiny",
+        "Amulet of Power",
+        "Enchanted Ring",
+        "Staff of the Elements",
+        "Cloak of Shadows",
+        "Boots of Swiftness",
+        "Helm of Insight",
+        "Gauntlets of Strength",
+        "Bow of Precision",
+        "Shield of Protection"
+    ]
+    item_descriptions = [
+        "A legendary sword imbued with the power to shape fate itself.",
+        "An amulet that pulses with an ancient, mysterious energy.",
+        "A ring that glimmers with enchanted light, enhancing the wearer's abilities.",
+        "A staff that harnesses the raw power of the elements.",
+        "A cloak that blends the wearer into the shadows, granting stealth and concealment.",
+        "Boots that grant incredible speed and agility to the wearer.",
+        "A helm that bestows enhanced wisdom and clarity of thought.",
+        "Gauntlets that imbue the wearer with superhuman strength.",
+        "A bow that never misses its mark, guided by an unseen force.",
+        "A shield that emanates an aura of protection, warding off harm."
+    ]
+    item_name = random.choice(item_names)
+    item_description = random.choice(item_descriptions)
     return item_name, item_description
 
 def generate_npc():
-    # Placeholder implementation for generating an NPC
-    npc_name = random.choice(["Wise Old Sage", "Mysterious Stranger", "Friendly Merchant"])
-    npc_dialogue = "Greetings, traveler. How may I assist you on your journey?"
+    npc_names = [
+        "Wise Old Sage",
+        "Mysterious Stranger",
+        "Friendly Merchant",
+        "Eccentric Wizard",
+        "Grizzled Warrior",
+        "Mischievous Rogue",
+        "Gentle Healer",
+        "Cryptic Oracle",
+        "Jovial Bard",
+        "Stoic Paladin"
+    ]
+    npc_dialogues = [
+        "Greetings, traveler. How may I assist you on your journey?",
+        "Ah, another adventurer. Be cautious, for danger lurks in every corner.",
+        "Welcome, friend! Take a look at my wares. I have something for every need.",
+        "The stars align in curious ways. Your fate is intertwined with the destiny of this land.",
+        "I've seen many battles, but the fight against evil is never-ending.",
+        "Looking for trouble, or just passing through? Either way, watch your back.",
+        "Welcome, weary traveler. Let me tend to your wounds and ease your burdens.",
+        "The future is shrouded in mystery, but I sense great potential within you.",
+        "Ah, a fellow adventurer! Let me regale you with tales of heroic deeds and epic sagas.",
+        "Stand tall, champion of justice. The path ahead is fraught with peril, but your courage will light the way."
+    ]
+    npc_name = random.choice(npc_names)
+    npc_dialogue = random.choice(npc_dialogues)
     return npc_name, npc_dialogue
 
 def play_game(hero, scenario, world):
@@ -108,7 +178,7 @@ def play_game(hero, scenario, world):
     print(scenario.description)
 
     # Set up initial game state based on the scenario
-    location = "Starting Location"
+    location = f"({hero.x}, {hero.y})"  # Update location based on hero's initial position
     inventory = []
 
     while True:
@@ -123,6 +193,22 @@ def play_game(hero, scenario, world):
         if choice == "1":
             # Explore action
             print("You explore your surroundings...")
+            # Prompt the player for the direction to move
+            direction = input("Enter the direction to move (up/down/left/right): ")
+            if direction == "up":
+                hero.y -= 1
+            elif direction == "down":
+                hero.y += 1
+            elif direction == "left":
+                hero.x -= 1
+            elif direction == "right":
+                hero.x += 1
+            else:
+                print("Invalid direction. Please try again.")
+                continue
+
+            location = f"({hero.x}, {hero.y})"  # Update location based on hero's new position
+
             # Check if the current location matches any points of interest in the world
             for point in world:
                 if point.x == hero.x and point.y == hero.y:
@@ -165,7 +251,7 @@ def start_game():
 
     if choice == "1":
         print("Generating characters...")
-        characters = [generate_character() for _ in range(3)]
+        characters = [generate_character(0, 0) for _ in range(3)]
         print("Choose your character:")
         for i, character in enumerate(characters, start=1):
             print(f"{i}. {character}")
